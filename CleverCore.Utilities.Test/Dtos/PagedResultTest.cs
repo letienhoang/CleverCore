@@ -7,14 +7,14 @@ namespace CleverCore.Utilities.Test.Dtos
     public class PagedResultTest
     {
         [Fact]
-        public void Constructor_CreateObjectNotNull_NoParam()
+        public void Constructor_CreateObjectNoParam_NotNull()
         {
             var pagedResult = new PagedResult<Array>();
             Assert.NotNull(pagedResult);
         }
 
         [Fact]
-        public void Constructor_CreateObjectWithResultsIsEmptyList_NoParam()
+        public void Constructor_CreateObjectNoParam_ResultsIsEmptyList()
         {
             var pagedResult = new PagedResult<Array>();
             Assert.NotNull(pagedResult.Results);

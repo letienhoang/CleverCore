@@ -9,7 +9,7 @@ namespace CleverCore.Utilities.Test.Helpers
         [InlineData("Ha Noi Viet Nam", "ha-noi-viet-nam")]
         [InlineData("Hà Nội -- Việt Nam?", "ha-noi-viet-nam")]
         [InlineData("Hà Nội Việt Nam 123", "ha-noi-viet-nam-123")]
-        public void ToUnsignString_ShouldReturnUnsignString_WhenInputContainsDiacritics(string input, string expected)
+        public void ToUnsignString_InputContainsDiacritics_ReturnUnsignString(string input, string expected)
         {
             // Arrange
             // Act
@@ -22,7 +22,7 @@ namespace CleverCore.Utilities.Test.Helpers
         [InlineData(1234567890, "một tỷ hai trăm ba mươi bốn triệu năm trăm sáu mươi bảy nghìn tám trăm chín mươi đồng chẵn")]
         [InlineData(-1234567890, "Âm một tỷ hai trăm ba mươi bốn triệu năm trăm sáu mươi bảy nghìn tám trăm chín mươi đồng chẵn")]
         [InlineData(0, "không đồng chẵn")]
-        public void ToString_ShouldReturnCorrectStringRepresentation_WhenInputIsDecimal(decimal input, string expected)
+        public void ToString_InputIsDecimal_ReturnCorrectStringRepresentation(decimal input, string expected)
         {
             // Arrange
             // Act
