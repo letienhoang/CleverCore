@@ -44,8 +44,8 @@ In this version, I have added automated unit testing using **xUnit** to improve 
 
 ## Additional Information
 
-* Original project: [https://github.com/teduinternational/CleverCore](https://github.com/teduinternational/CleverCore)
-* TEDU-17 Course: [https://tedu.com.vn/khoa-hoc/ky-thuat-unit-test-cho-net-developer-29.html](https://tedu.com.vn/khoa-hoc/ky-thuat-unit-test-cho-net-developer-29.html)
+* Original project: [CleverCore](https://github.com/teduinternational/CleverCore)
+* TEDU-17 Course: [TEDU-17](https://tedu.com.vn/khoa-hoc/ky-thuat-unit-test-cho-net-developer-29.html)
 
 ---
 

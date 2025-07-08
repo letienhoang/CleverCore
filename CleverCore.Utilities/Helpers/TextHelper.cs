@@ -9,28 +9,27 @@ namespace CleverCore.Utilities.Helpers
         public static string ToUnsignString(string input)
         {
             input = input.Trim();
-            for (int i = 0x20; i < 0x30; i++)
-            {
-                input = input.Replace(((char)i).ToString(), " ");
-            }
-            input = input.Replace(".", "-");
-            input = input.Replace(" ", "-");
-            input = input.Replace(",", "-");
-            input = input.Replace(";", "-");
-            input = input.Replace(":", "-");
-            input = input.Replace("  ", "-");
+            string normalized = input.Normalize(NormalizationForm.FormD);
             Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
-            string str = input.Normalize(NormalizationForm.FormD);
-            string str2 = regex.Replace(str, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
-            while (str2.IndexOf("?") >= 0)
+            string unsign = regex.Replace(normalized, string.Empty).Replace('đ', 'd').Replace('Đ', 'D');
+
+            unsign = unsign.Replace(".", "-")
+                .Replace(" ", "-")
+                .Replace(",", "-")
+                .Replace(";", "-")
+                .Replace(":", "-")
+                .Replace("  ", "-");
+
+            unsign = Regex.Replace(unsign, @"[^a-zA-Z0-9\-]", string.Empty);
+
+            unsign = Regex.Replace(unsign, @"\\s+", "-");
+
+            while (unsign.Contains("--"))
             {
-                str2 = str2.Remove(str2.IndexOf("?"), 1);
+                unsign = unsign.Replace("--", "-");
             }
-            while (str2.Contains("--"))
-            {
-                str2 = str2.Replace("--", "-").ToLower();
-            }
-            return str2;
+
+            return unsign.ToLower().Trim('-');
         }
         public static string ToString(decimal number)
         {
@@ -105,7 +104,7 @@ namespace CleverCore.Utilities.Helpers
                 }
             }
             if (booAm) str = "Âm " + str;
-            return str + "đồng chẵn";
+            return Regex.Replace(str + "đồng chẵn", @"\s+", " ").Trim();
         }
     }
 }
