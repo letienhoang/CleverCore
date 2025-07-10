@@ -1,6 +1,7 @@
 ﻿using CleverCore.Data.Entities;
 using CleverCore.Data.Enums;
 using CleverCore.Infrastructure.Interfaces;
+using Moq;
 using System;
 using System.Linq;
 using Xunit;
@@ -10,14 +11,15 @@ namespace CleverCore.Data.EF.Test
     public class EFRepositoryTest
     {
         private readonly AppDbContext _context;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly Mock<IUnitOfWork> _mockUnitOfWork;
 
         public EFRepositoryTest()
         {
             _context = ContextFactory.CreateInMemoryDbContext();
             _context.Database.EnsureCreated();
 
-            _unitOfWork = new EFUnitOfWork(_context);
+            _mockUnitOfWork = new Mock<IUnitOfWork>();
+            _mockUnitOfWork.Setup(uow => uow.Commit()).Callback(() => _context.SaveChanges());
         }
 
         [Fact]
@@ -50,7 +52,7 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 1,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
 
             var addedFunction = repository.FindById(functionId.ToString());
             Assert.NotNull(addedFunction);
@@ -82,7 +84,7 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 2,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var activeFunctions = repository.FindAll(x => x.Status == Status.Active);
             Assert.Single(activeFunctions);
             Assert.Equal("Test Function", activeFunctions.First().Name);
@@ -103,7 +105,7 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 1,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var functions = repository.FindAll(x => x.Status == Status.Active);
             Assert.NotNull(functions);
             Assert.Single(functions);
@@ -125,7 +127,7 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 1,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var function = repository.FindById(functionId.ToString());
             Assert.NotNull(function);
             Assert.Equal("Test Function", function.Name);
@@ -146,7 +148,7 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 1,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var function = repository.FindSingle(x => x.Name == "Test Function");
             Assert.NotNull(function);
             Assert.Equal("Test Function", function.Name);
@@ -168,9 +170,9 @@ namespace CleverCore.Data.EF.Test
                 ParentId = null
             };
             repository.Add(function);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             repository.Remove(function);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var removedFunction = repository.FindById(functionId.ToString());
             Assert.Null(removedFunction);
         }
@@ -191,9 +193,9 @@ namespace CleverCore.Data.EF.Test
                 ParentId = null
             };
             repository.Add(function);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             repository.Remove(function.Id);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var removedFunction = repository.FindById(functionId.ToString());
             Assert.Null(removedFunction);
         }
@@ -224,10 +226,10 @@ namespace CleverCore.Data.EF.Test
                 SortOrder = 2,
                 ParentId = null
             });
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             repository.Remove(functionId1.ToString());
             repository.Remove(functionId2.ToString());
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var removedFunction1 = repository.FindById(functionId1.ToString());
             var removedFunction2 = repository.FindById(functionId2.ToString());
             Assert.Null(removedFunction1);
@@ -250,10 +252,10 @@ namespace CleverCore.Data.EF.Test
                 ParentId = null
             };
             repository.Add(function);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             function.Name = "Updated Function";
             repository.Update(function);
-            _unitOfWork.Commit();
+            _mockUnitOfWork.Object.Commit();
             var updatedFunction = repository.FindById(functionId.ToString());
             Assert.NotNull(updatedFunction);
             Assert.Equal("Updated Function", updatedFunction.Name);
