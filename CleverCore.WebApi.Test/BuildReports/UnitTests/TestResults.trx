@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="38c6b54f-ff8d-409f-b025-1f4e6763716e" name="hoang.letien@CISBOX-DEV24 2025-07-11 14:59:16" runUser="CISBOXLTD\hoang.letien" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-07-11T14:59:16.1650755+07:00" queuing="2025-07-11T14:59:16.1650759+07:00" start="2025-07-11T14:59:02.1544008+07:00" finish="2025-07-11T14:59:16.1796628+07:00" />
+  <TestSettings name="default" id="07accd78-b9fc-47ba-96d4-8598a9ca44d2">
+    <Deployment runDeploymentRoot="hoang.letien_CISBOX-DEV24_2025-07-11_14_59_16" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7663761e-aade-434d-80b0-76a1e8443e7e" testId="1d9c5387-ce99-f6e7-8f03-17f534578971" testName="CleverCore.WebApi.Test.Controllers.ProductControllerTest.Get_ValidRequest_OkResult" computerName="CISBOX-DEV24" duration="00:00:00.1830000" startTime="2025-07-11T14:59:16.0188125+07:00" endTime="2025-07-11T14:59:16.0188251+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7663761e-aade-434d-80b0-76a1e8443e7e" />
+    <UnitTestResult executionId="fc24d936-deb5-4a73-ac78-dcb5ceda912f" testId="56f63d21-32be-8e6b-0e08-ac726b05af25" testName="CleverCore.WebApi.Test.Controllers.ProductControllerTest.Get_ServiceException_BadRequestResult" computerName="CISBOX-DEV24" duration="00:00:00.0030000" startTime="2025-07-11T14:59:16.0342714+07:00" endTime="2025-07-11T14:59:16.0342717+07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc24d936-deb5-4a73-ac78-dcb5ceda912f" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="CleverCore.WebApi.Test.Controllers.ProductControllerTest.Get_ServiceException_BadRequestResult" storage="d:\test\filetest\learnmore\unittest\clevercore\clevercore.webapi.test\bin\debug\netcoreapp2.2\clevercore.webapi.test.dll" id="56f63d21-32be-8e6b-0e08-ac726b05af25">
+      <Execution id="fc24d936-deb5-4a73-ac78-dcb5ceda912f" />
+      <TestMethod codeBase="D:\Test\fileTest\learnMore\UnitTest\CleverCore\CleverCore.WebApi.Test\bin\Debug\netcoreapp2.2\CleverCore.WebApi.Test.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CleverCore.WebApi.Test.Controllers.ProductControllerTest" name="Get_ServiceException_BadRequestResult" />
+    </UnitTest>
+    <UnitTest name="CleverCore.WebApi.Test.Controllers.ProductControllerTest.Get_ValidRequest_OkResult" storage="d:\test\filetest\learnmore\unittest\clevercore\clevercore.webapi.test\bin\debug\netcoreapp2.2\clevercore.webapi.test.dll" id="1d9c5387-ce99-f6e7-8f03-17f534578971">
+      <Execution id="7663761e-aade-434d-80b0-76a1e8443e7e" />
+      <TestMethod codeBase="D:\Test\fileTest\learnMore\UnitTest\CleverCore\CleverCore.WebApi.Test\bin\Debug\netcoreapp2.2\CleverCore.WebApi.Test.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CleverCore.WebApi.Test.Controllers.ProductControllerTest" name="Get_ValidRequest_OkResult" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1d9c5387-ce99-f6e7-8f03-17f534578971" executionId="7663761e-aade-434d-80b0-76a1e8443e7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56f63d21-32be-8e6b-0e08-ac726b05af25" executionId="fc24d936-deb5-4a73-ac78-dcb5ceda912f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.3+1b45f5407b (64-bit .NET Core 4.6.28207.03)&#xD;
+[xUnit.net 00:00:12.38]   Discovering: CleverCore.WebApi.Test&#xD;
+[xUnit.net 00:00:12.47]   Discovered:  CleverCore.WebApi.Test&#xD;
+[xUnit.net 00:00:12.48]   Starting:    CleverCore.WebApi.Test&#xD;
+[xUnit.net 00:00:12.86]   Finished:    CleverCore.WebApi.Test&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
