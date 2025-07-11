@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using AutoMapper;
+﻿using AutoMapper;
+using CleverCore.Application.AutoMapper;
 using CleverCore.Application.Dapper.Implementation;
 using CleverCore.Application.Dapper.Interfaces;
 using CleverCore.Application.Implementation;
@@ -28,6 +26,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using PaulMiami.AspNetCore.Mvc.Recaptcha;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace CleverCore.WebApp
 {
@@ -85,7 +86,6 @@ namespace CleverCore.WebApp
                 options.Cookie.HttpOnly = true;
             });
             services.AddImageResizer();
-            services.AddAutoMapper();
             services.AddAuthentication()
                 .AddFacebook(facebookOpts =>
                 {
@@ -100,12 +100,18 @@ namespace CleverCore.WebApp
             services.AddScoped<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddScoped<RoleManager<AppRole>, RoleManager<AppRole>>();
 
-            services.AddSingleton(Mapper.Configuration);
-            services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
+            // AutoMapper configuration
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new DomainToViewModelMappingProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IViewRenderService, ViewRenderService>();
-
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IExcelService, ExcelService>();
             services.AddTransient<DbInitializer>();
 
             services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, CustomClaimsPrincipalFactory>();

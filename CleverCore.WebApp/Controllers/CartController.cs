@@ -1,35 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CleverCore.Application.Interfaces;
+﻿using CleverCore.Application.Interfaces;
 using CleverCore.Application.ViewModels.Product;
 using CleverCore.Data.Enums;
 using CleverCore.Utilities.Constants;
 using CleverCore.WebApp.Extensions;
 using CleverCore.WebApp.Models;
-using CleverCore.WebApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CleverCore.WebApp.Controllers
 {
     public class CartController : Controller
     {
         private readonly IBillService _billService;
-        private readonly IConfiguration _configuration;
-        private readonly IEmailSender _emailSender;
         private readonly IProductService _productService;
-        private readonly IViewRenderService _viewRenderService;
 
-        public CartController(IProductService productService,
-            IViewRenderService viewRenderService, IEmailSender emailSender,
-            IConfiguration configuration, IBillService billService)
+        public CartController(IProductService productService, IBillService billService)
         {
             _productService = productService;
             _billService = billService;
-            _viewRenderService = viewRenderService;
-            _configuration = configuration;
-            _emailSender = emailSender;
         }
 
         [Route("cart.html", Name = "Cart")]
@@ -42,9 +32,12 @@ namespace CleverCore.WebApp.Controllers
         [HttpGet]
         public IActionResult Checkout()
         {
-            var model = new CheckoutViewModel();
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
-            if (session.Any(x => x.Color == null || x.Size == null)) return Redirect("/cart.html");
+            CheckoutViewModel model = new CheckoutViewModel();
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            if (session.Any(x => x.Color == null || x.Size == null))
+            {
+                return Redirect("/cart.html");
+            }
 
             model.Carts = session;
             return View(model);
@@ -53,15 +46,17 @@ namespace CleverCore.WebApp.Controllers
         [Route("checkout.html", Name = "Checkout")]
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult Chekout(CheckoutViewModel model)
+        public IActionResult Checkout(CheckoutViewModel model)
         {
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
 
             if (ModelState.IsValid)
+            {
                 if (session != null)
                 {
-                    var details = new List<BillDetailViewModel>();
-                    foreach (var item in session)
+                    List<BillDetailViewModel> details = new List<BillDetailViewModel>();
+                    foreach (ShoppingCartViewModel item in session)
+                    {
                         details.Add(new BillDetailViewModel
                         {
                             Product = item.Product,
@@ -71,7 +66,9 @@ namespace CleverCore.WebApp.Controllers
                             Quantity = item.Quantity,
                             ProductId = item.Product.Id
                         });
-                    var billViewModel = new BillViewModel
+                    }
+
+                    BillViewModel billViewModel = new BillViewModel
                     {
                         CustomerMobile = model.CustomerMobile,
                         BillStatus = BillStatus.New,
@@ -81,7 +78,10 @@ namespace CleverCore.WebApp.Controllers
                         BillDetails = details
                     };
                     if (User.Identity.IsAuthenticated)
+                    {
                         billViewModel.CustomerId = Guid.Parse(User.GetSpecificClaim("UserId"));
+                    }
+
                     _billService.Create(billViewModel);
                     try
                     {
@@ -98,6 +98,7 @@ namespace CleverCore.WebApp.Controllers
                         ModelState.AddModelError("", ex.Message);
                     }
                 }
+            }
 
             model.Carts = session;
             return View(model);
@@ -111,8 +112,11 @@ namespace CleverCore.WebApp.Controllers
         /// <returns></returns>
         public IActionResult GetCart()
         {
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
-            if (session == null) session = new List<ShoppingCartViewModel>();
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            if (session == null)
+            {
+                session = new List<ShoppingCartViewModel>();
+            }
 
             return new OkObjectResult(session);
         }
@@ -137,19 +141,19 @@ namespace CleverCore.WebApp.Controllers
         public IActionResult AddToCart(int productId, int quantity, int color, int size)
         {
             //Get product detail
-            var product = _productService.GetById(productId);
+            ProductViewModel product = _productService.GetById(productId);
 
             //Get session with item list from cart
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
             if (session != null)
             {
                 //Convert string to list object
-                var hasChanged = false;
+                bool hasChanged = false;
 
                 //Check exist with item product id
                 if (session.Any(x => x.Product.Id == productId))
                 {
-                    foreach (var item in session)
+                    foreach (ShoppingCartViewModel item in session)
                         //Update quantity for product if match product id
                         if (item.Product.Id == productId)
                         {
@@ -172,12 +176,15 @@ namespace CleverCore.WebApp.Controllers
                 }
 
                 //Update back to cart
-                if (hasChanged) HttpContext.Session.Set(CommonConstants.CartSession, session);
+                if (hasChanged)
+                {
+                    HttpContext.Session.Set(CommonConstants.CartSession, session);
+                }
             }
             else
             {
                 //Add new cart
-                var cart = new List<ShoppingCartViewModel>();
+                List<ShoppingCartViewModel> cart = new List<ShoppingCartViewModel>();
                 cart.Add(new ShoppingCartViewModel
                 {
                     Product = product,
@@ -199,11 +206,11 @@ namespace CleverCore.WebApp.Controllers
         /// <returns></returns>
         public IActionResult RemoveFromCart(int productId)
         {
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
             if (session != null)
             {
-                var hasChanged = false;
-                foreach (var item in session)
+                bool hasChanged = false;
+                foreach (ShoppingCartViewModel item in session)
                     if (item.Product.Id == productId)
                     {
                         session.Remove(item);
@@ -211,7 +218,10 @@ namespace CleverCore.WebApp.Controllers
                         break;
                     }
 
-                if (hasChanged) HttpContext.Session.Set(CommonConstants.CartSession, session);
+                if (hasChanged)
+                {
+                    HttpContext.Session.Set(CommonConstants.CartSession, session);
+                }
                 return new OkObjectResult(productId);
             }
 
@@ -226,14 +236,15 @@ namespace CleverCore.WebApp.Controllers
         /// <returns></returns>
         public IActionResult UpdateCart(int productId, int quantity, int color, int size)
         {
-            var session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
+            List<ShoppingCartViewModel> session = HttpContext.Session.Get<List<ShoppingCartViewModel>>(CommonConstants.CartSession);
             if (session != null)
             {
-                var hasChanged = false;
-                foreach (var item in session)
+                bool hasChanged = false;
+                foreach (ShoppingCartViewModel item in session)
+                {
                     if (item.Product.Id == productId)
                     {
-                        var product = _productService.GetById(productId);
+                        ProductViewModel product = _productService.GetById(productId);
                         item.Product = product;
                         item.Size = _billService.GetSize(size);
                         item.Color = _billService.GetColor(color);
@@ -241,8 +252,12 @@ namespace CleverCore.WebApp.Controllers
                         item.Price = product.PromotionPrice ?? product.Price;
                         hasChanged = true;
                     }
+                }
 
-                if (hasChanged) HttpContext.Session.Set(CommonConstants.CartSession, session);
+                if (hasChanged)
+                {
+                    HttpContext.Session.Set(CommonConstants.CartSession, session);
+                }
                 return new OkObjectResult(productId);
             }
 
@@ -252,14 +267,14 @@ namespace CleverCore.WebApp.Controllers
         [HttpGet]
         public IActionResult GetColors()
         {
-            var colors = _billService.GetColors();
+            List<ColorViewModel> colors = _billService.GetColors();
             return new OkObjectResult(colors);
         }
 
         [HttpGet]
         public IActionResult GetSizes()
         {
-            var sizes = _billService.GetSizes();
+            List<SizeViewModel> sizes = _billService.GetSizes();
             return new OkObjectResult(sizes);
         }
 
